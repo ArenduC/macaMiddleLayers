@@ -35,7 +35,7 @@ app.get(`${baseUrl}/borderlist`, (req, res) => {
         isSuccess: true,
         data: result,
       });
-      console.log("result", result);
+      console.log("result");
     } else {
       res.status(404).send({
         message: "No data found",
