@@ -31,7 +31,7 @@ const responseReturn = (res, result, err) => {
       isSuccess: false,
       data: null,
     });
-  } else if (result && result.length > 0) {
+  } else if (result) {
     res.status(200).send({
       message: "Data retrieved successfully",
       status: 200,
@@ -71,6 +71,39 @@ app.post(`${baseUrl}/user_marketing`, (req, res) => {
           responseReturn(res, result, err);
         });
       }
+    }
+  );
+});
+
+app.post(`${baseUrl}/user_deposite`, (req, res) => {
+  console.log("Request Body:", req.body);
+  let user_id = req.body.user_id;
+  let manager_id = req.body.manager_id;
+  let user_deposite_amount = req.body.user_deposite_amount;
+  let user_deposite_date = new Date();
+
+  db.query(
+    "INSERT INTO user_deposite_master(user_id, manager_id, user_deposite_amount, user_deposite_date) values(?,?,?,?)",
+    [user_id, manager_id, user_deposite_amount, user_deposite_date],
+    (err, result, field) => {
+      responseReturn(res, result, err);
+    }
+  );
+});
+
+app.post(`${baseUrl}/electric_bill`, (req, res) => {
+  console.log("Request Body:", req.body);
+  let electric_bill = req.body.electric_bill;
+  let manager_id = req.body.manager_id;
+  let electric_unit = req.body.electric_unit;
+  let internet_bill = req.body.internet_bill;
+  let created_date = new Date();
+
+  db.query(
+    "INSERT INTO maca_electric_bill(manager_id, electric_bill, electric_unit, internet_bill, created_date) values(?,?,?,?,?)",
+    [manager_id, electric_bill, electric_unit, internet_bill, created_date],
+    (err, result, field) => {
+      responseReturn(res, result, err);
     }
   );
 });
