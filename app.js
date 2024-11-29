@@ -108,6 +108,49 @@ app.post(`${baseUrl}/electric_bill`, (req, res) => {
   );
 });
 
+app.get(`${baseUrl}/bed_available`, (req, res) => {
+  db.query(
+    "SELECT user_bed_master.user_bed, user_bed_master.id FROM user_bed_master LEFT JOIN user ON user_bed_master.id = user.user_bed_id WHERE user.user_bed_id IS NULL;",
+    (err, result, field) => {
+      responseReturn(res, result, err);
+    }
+  );
+});
+
+app.post(`${baseUrl}/user_login`, (req, res) => {
+  let password = req.body.password;
+  let email = req.body.email;
+  db.query(
+    'select user.id, user.name, user_type_master.user_type, user_bed_master.user_bed, addres_master.city, IFNULL(sum(user_marketig_master.marketing_amount), "Pending") as Total_Marketing from user inner join addres_master on user.city_id = addres_master.id inner join user_type_master on user.user_type_id = user_type_master.id LEFT join user_marketig_master on user_marketig_master.user_id = user.id inner join user_bed_master on user_bed_master.id = user.user_bed_id where user.email = ? AND user.password = ?;',
+    [email, password],
+    (err, result, field) => {
+      responseReturn(res, result, err);
+    }
+  );
+});
+
+app.post(`${baseUrl}/set_marketing_shift`, (req, res) => {
+  let borderId = req.body.borderId;
+  let startDate = req.body.startDate;
+  let endDate = req.body.endDate;
+  let shift = req.body.shift;
+  let created_date = new Date();
+  db.query(
+    "INSERT INTO Shifts (borderId, createdDate, startDate, endDate, shift)VALUES (?, ?, ?, ?, ?)",
+    [borderId, created_date, startDate, endDate, shift],
+    (err, result, field) => {
+      responseReturn(res, result, err);
+    }
+  );
+});
+
+app.get("/", (req, res) => {
+  return res.send({
+    success: true,
+    message: "hello i am node sql.....",
+  });
+});
+
 app.listen(3000, () => {
   console.log("running server");
 });
